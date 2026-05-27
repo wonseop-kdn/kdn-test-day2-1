@@ -170,6 +170,13 @@ export function runTopologyProcessor(state: NetworkState): BusBranchModel {
     const toBus = nodeTobus.get(branch.nodeToId);
     if (fromBus === undefined || toBus === undefined) continue;
     if (fromBus === toBus) continue; // 내부 단락 (루프) 무시
+
+    // CB가 열려 있으면 단자 노드가 모선과 분리 → substationIds = []
+    // 고립된 단자를 포함하는 Branch는 전기적 개방 상태이므로 제외
+    const fromConnected = (busSubstationIds.get(fromBus)?.length ?? 0) > 0;
+    const toConnected = (busSubstationIds.get(toBus)?.length ?? 0) > 0;
+    if (!fromConnected || !toConnected) continue;
+
     branchModels.push({
       id: `${branch.id}_bm`,
       fromBus,

@@ -26,99 +26,104 @@ export interface LineCfg {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 레이아웃:
+//   상단 행 (busY≈140): SS1 좌측 · SS2 우측
+//   하단 행 (busY≈470): SS3 좌측(SS1 동일 열) · SS4 중앙
+//   우측 중앙 (busY≈305): SS5
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const SUBSTATION_CFGS: SubstationCfg[] = [
-  // ── SS1 (Bus 1, Slack) ──
+  // ── SS1 (Bus 1, Slack) ── 상단 좌측
   {
-    id: 'SS1', cx: 195, cy: 135, w: 162, h: 90,
-    busY: 135, busX1: 114, busX2: 276,
+    id: 'SS1', cx: 195, cy: 140, w: 155, h: 85,
+    busY: 140, busX1: 118, busX2: 273,
     bays: [
-      { cbId: 'CB_SS1_G1',  dsId: 'DS_SS1_G1',  cbPos: {x:150,y:157}, dsPos: {x:150,y:146}, exitPos: {x:150,y:180}, dir:'S', label:'G1',  type:'gen'  },
-      { cbId: 'CB_SS1_L12', dsId: 'DS_SS1_L12', cbPos: {x:264,y:125}, dsPos: {x:252,y:125}, exitPos: {x:286,y:125}, dir:'E', label:'L12', type:'line' },
-      { cbId: 'CB_SS1_L13', dsId: 'DS_SS1_L13', cbPos: {x:235,y:157}, dsPos: {x:235,y:146}, exitPos: {x:235,y:180}, dir:'S', label:'L13', type:'line' },
+      { cbId: 'CB_SS1_G1',  dsId: 'DS_SS1_G1',  cbPos: {x:150,y:160}, dsPos: {x:150,y:172}, exitPos: {x:150,y:198}, dir:'S', label:'G1',  type:'gen'  },
+      { cbId: 'CB_SS1_L12', dsId: 'DS_SS1_L12', cbPos: {x:260,y:128}, dsPos: {x:271,y:128}, exitPos: {x:290,y:128}, dir:'E', label:'L12', type:'line' },
+      { cbId: 'CB_SS1_L13', dsId: 'DS_SS1_L13', cbPos: {x:222,y:160}, dsPos: {x:222,y:172}, exitPos: {x:222,y:198}, dir:'S', label:'L13', type:'line' },
     ],
   },
-  // ── SS2 (Bus 2, Load Hub) ──
+  // ── SS2 (Bus 2, Load Hub) ── 상단 우측
   {
-    id: 'SS2', cx: 668, cy: 130, w: 210, h: 90,
-    busY: 130, busX1: 563, busX2: 773,
+    id: 'SS2', cx: 650, cy: 140, w: 220, h: 85,
+    busY: 140, busX1: 540, busX2: 760,
     bays: [
-      { cbId: 'CB_SS2_LD2',  dsId: 'DS_SS2_LD2', cbPos: {x:612,y:152}, dsPos: {x:612,y:141}, exitPos: {x:612,y:175}, dir:'S', label:'LD2', type:'load' },
-      { cbId: 'CB_SS2_L12',  dsId: 'DS_SS2_L12', cbPos: {x:583,y:120}, dsPos: {x:595,y:120}, exitPos: {x:561,y:120}, dir:'W', label:'L12', type:'line' },
-      { cbId: 'CB_SS2_L23',  dsId: 'DS_SS2_L23', cbPos: {x:642,y:152}, dsPos: {x:642,y:141}, exitPos: {x:642,y:175}, dir:'S', label:'L23', type:'line' },
-      { cbId: 'CB_SS2_L24',  dsId: 'DS_SS2_L24', cbPos: {x:676,y:152}, dsPos: {x:676,y:141}, exitPos: {x:676,y:175}, dir:'S', label:'L24', type:'line' },
-      { cbId: 'CB_SS2_L25',  dsId: 'DS_SS2_L25', cbPos: {x:761,y:120}, dsPos: {x:749,y:120}, exitPos: {x:781,y:120}, dir:'E', label:'L25', type:'line' },
+      { cbId: 'CB_SS2_LD2',  dsId: 'DS_SS2_LD2', cbPos: {x:590,y:160}, dsPos: {x:590,y:172}, exitPos: {x:590,y:198}, dir:'S', label:'LD2', type:'load' },
+      { cbId: 'CB_SS2_L12',  dsId: 'DS_SS2_L12', cbPos: {x:553,y:128}, dsPos: {x:542,y:128}, exitPos: {x:524,y:128}, dir:'W', label:'L12', type:'line' },
+      { cbId: 'CB_SS2_L23',  dsId: 'DS_SS2_L23', cbPos: {x:630,y:160}, dsPos: {x:630,y:172}, exitPos: {x:630,y:198}, dir:'S', label:'L23', type:'line' },
+      { cbId: 'CB_SS2_L24',  dsId: 'DS_SS2_L24', cbPos: {x:668,y:160}, dsPos: {x:668,y:172}, exitPos: {x:668,y:198}, dir:'S', label:'L24', type:'line' },
+      { cbId: 'CB_SS2_L25',  dsId: 'DS_SS2_L25', cbPos: {x:747,y:128}, dsPos: {x:758,y:128}, exitPos: {x:777,y:128}, dir:'E', label:'L25', type:'line' },
     ],
   },
-  // ── SS3 (Bus 3, PV Gen) ──
+  // ── SS3 (Bus 3, PV Gen) ── 하단 좌측 (SS1과 동일 열)
   {
-    id: 'SS3', cx: 195, cy: 480, w: 162, h: 95,
-    busY: 480, busX1: 114, busX2: 276,
+    id: 'SS3', cx: 195, cy: 470, w: 165, h: 85,
+    busY: 470, busX1: 113, busX2: 278,
     bays: [
-      { cbId: 'CB_SS3_G3',  dsId: 'DS_SS3_G3',  cbPos: {x:150,y:497}, dsPos: {x:150,y:507}, exitPos: {x:150,y:525}, dir:'S', label:'G3',  type:'gen'  },
-      { cbId: 'CB_SS3_L13', dsId: 'DS_SS3_L13', cbPos: {x:190,y:463}, dsPos: {x:190,y:453}, exitPos: {x:190,y:435}, dir:'N', label:'L13', type:'line' },
-      { cbId: 'CB_SS3_L23', dsId: 'DS_SS3_L23', cbPos: {x:228,y:463}, dsPos: {x:228,y:453}, exitPos: {x:228,y:435}, dir:'N', label:'L23', type:'line' },
-      { cbId: 'CB_SS3_L34', dsId: 'DS_SS3_L34', cbPos: {x:264,y:470}, dsPos: {x:252,y:470}, exitPos: {x:286,y:470}, dir:'E', label:'L34', type:'line' },
+      { cbId: 'CB_SS3_G3',  dsId: 'DS_SS3_G3',  cbPos: {x:148,y:490}, dsPos: {x:148,y:502}, exitPos: {x:148,y:527}, dir:'S', label:'G3',  type:'gen'  },
+      { cbId: 'CB_SS3_L13', dsId: 'DS_SS3_L13', cbPos: {x:185,y:452}, dsPos: {x:185,y:440}, exitPos: {x:185,y:420}, dir:'N', label:'L13', type:'line' },
+      { cbId: 'CB_SS3_L23', dsId: 'DS_SS3_L23', cbPos: {x:222,y:452}, dsPos: {x:222,y:440}, exitPos: {x:222,y:420}, dir:'N', label:'L23', type:'line' },
+      { cbId: 'CB_SS3_L34', dsId: 'DS_SS3_L34', cbPos: {x:265,y:460}, dsPos: {x:276,y:460}, exitPos: {x:296,y:460}, dir:'E', label:'L34', type:'line' },
     ],
   },
-  // ── SS4 (Bus 4, Load) ──
+  // ── SS4 (Bus 4, Load) ── 하단 중앙
   {
-    id: 'SS4', cx: 510, cy: 480, w: 166, h: 90,
-    busY: 480, busX1: 427, busX2: 593,
+    id: 'SS4', cx: 510, cy: 470, w: 160, h: 85,
+    busY: 470, busX1: 430, busX2: 590,
     bays: [
-      { cbId: 'CB_SS4_LD4',  dsId: 'DS_SS4_LD4', cbPos: {x:479,y:497}, dsPos: {x:479,y:507}, exitPos: {x:479,y:525}, dir:'S', label:'LD4', type:'load' },
-      { cbId: 'CB_SS4_L24',  dsId: 'DS_SS4_L24', cbPos: {x:515,y:463}, dsPos: {x:515,y:453}, exitPos: {x:515,y:435}, dir:'N', label:'L24', type:'line' },
-      { cbId: 'CB_SS4_L34',  dsId: 'DS_SS4_L34', cbPos: {x:447,y:470}, dsPos: {x:459,y:470}, exitPos: {x:420,y:470}, dir:'W', label:'L34', type:'line' },
-      { cbId: 'CB_SS4_L45',  dsId: 'DS_SS4_L45', cbPos: {x:581,y:490}, dsPos: {x:569,y:490}, exitPos: {x:599,y:490}, dir:'E', label:'L45', type:'line' },
+      { cbId: 'CB_SS4_LD4',  dsId: 'DS_SS4_LD4', cbPos: {x:480,y:490}, dsPos: {x:480,y:502}, exitPos: {x:480,y:527}, dir:'S', label:'LD4', type:'load' },
+      { cbId: 'CB_SS4_L24',  dsId: 'DS_SS4_L24', cbPos: {x:512,y:452}, dsPos: {x:512,y:440}, exitPos: {x:512,y:420}, dir:'N', label:'L24', type:'line' },
+      { cbId: 'CB_SS4_L34',  dsId: 'DS_SS4_L34', cbPos: {x:443,y:460}, dsPos: {x:432,y:460}, exitPos: {x:413,y:460}, dir:'W', label:'L34', type:'line' },
+      { cbId: 'CB_SS4_L45',  dsId: 'DS_SS4_L45', cbPos: {x:577,y:460}, dsPos: {x:588,y:460}, exitPos: {x:608,y:460}, dir:'E', label:'L45', type:'line' },
     ],
   },
-  // ── SS5 (Bus 5, Load) ──
+  // ── SS5 (Bus 5, Load) ── 우측 중앙
   {
-    id: 'SS5', cx: 835, cy: 310, w: 150, h: 90,
-    busY: 310, busX1: 760, busX2: 910,
+    id: 'SS5', cx: 870, cy: 305, w: 145, h: 85,
+    busY: 305, busX1: 798, busX2: 943,
     bays: [
-      { cbId: 'CB_SS5_LD5',  dsId: 'DS_SS5_LD5', cbPos: {x:882,y:327}, dsPos: {x:882,y:337}, exitPos: {x:882,y:355}, dir:'S', label:'LD5', type:'load' },
-      { cbId: 'CB_SS5_L25',  dsId: 'DS_SS5_L25', cbPos: {x:800,y:293}, dsPos: {x:800,y:283}, exitPos: {x:800,y:265}, dir:'N', label:'L25', type:'line' },
-      { cbId: 'CB_SS5_L45',  dsId: 'DS_SS5_L45', cbPos: {x:772,y:320}, dsPos: {x:784,y:320}, exitPos: {x:754,y:320}, dir:'W', label:'L45', type:'line' },
+      { cbId: 'CB_SS5_LD5',  dsId: 'DS_SS5_LD5', cbPos: {x:920,y:325}, dsPos: {x:920,y:337}, exitPos: {x:920,y:362}, dir:'S', label:'LD5', type:'load' },
+      { cbId: 'CB_SS5_L25',  dsId: 'DS_SS5_L25', cbPos: {x:830,y:287}, dsPos: {x:830,y:275}, exitPos: {x:830,y:255}, dir:'N', label:'L25', type:'line' },
+      { cbId: 'CB_SS5_L45',  dsId: 'DS_SS5_L45', cbPos: {x:811,y:295}, dsPos: {x:800,y:295}, exitPos: {x:782,y:295}, dir:'W', label:'L45', type:'line' },
     ],
   },
 ];
 
-// 선로 SVG 경로 (CB exitPos 사이를 잇는 직선/절선)
+// 선로 SVG 경로 (bay exitPos 사이를 잇는 선)
 export const LINE_CFGS: LineCfg[] = [
   {
     branchId: 'L12',
-    d: 'M 286,125 L 561,120',
-    labelPos: { x: 424, y: 112 },
+    d: 'M 290,128 L 524,128',   // 수평 (SS1→SS2)
+    labelPos: { x: 407, y: 114 },
   },
   {
     branchId: 'L13',
-    d: 'M 235,180 L 190,435',
-    labelPos: { x: 155, y: 310 },
+    d: 'M 222,198 L 185,420',   // 거의 수직 (SS1→SS3)
+    labelPos: { x: 168, y: 312 },
   },
   {
     branchId: 'L23',
-    d: 'M 642,175 L 228,435',
-    labelPos: { x: 400, y: 270 },
+    d: 'M 630,198 L 222,420',   // 대각 (SS2→SS3)
+    labelPos: { x: 393, y: 276 },
   },
   {
     branchId: 'L24',
-    d: 'M 676,175 L 515,435',
-    labelPos: { x: 640, y: 270 },
+    d: 'M 668,198 L 512,420',   // 대각 (SS2→SS4)
+    labelPos: { x: 627, y: 276 },
   },
   {
     branchId: 'L25',
-    d: 'M 781,120 L 800,265',
-    labelPos: { x: 808, y: 192 },
+    d: 'M 777,128 L 830,255',   // 단거리 대각 (SS2→SS5)
+    labelPos: { x: 833, y: 188 },
   },
   {
     branchId: 'L34',
-    d: 'M 286,470 L 420,470',
-    labelPos: { x: 355, y: 440 },
+    d: 'M 296,460 L 413,460',   // 수평 (SS3→SS4)
+    labelPos: { x: 355, y: 447 },
   },
   {
     branchId: 'L45',
-    d: 'M 599,490 L 754,320',
-    labelPos: { x: 688, y: 412 },
+    d: 'M 608,460 L 782,295',   // 대각 (SS4→SS5)
+    labelPos: { x: 712, y: 390 },
   },
 ];
