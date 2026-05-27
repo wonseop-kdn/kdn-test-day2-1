@@ -154,13 +154,20 @@ function SubstationSVG({ cfg, pfResult, getSwitchStatus, onToggleCB }: Substatio
       )}
       {!energized && (
         <g>
-          {/* 대각선 X (사선 표시) */}
-          <line x1={cfg.cx - cfg.w/2 + 8} y1={cfg.cy - cfg.h/2 + 8}
-                x2={cfg.cx + cfg.w/2 - 8} y2={cfg.cy + cfg.h/2 - 8}
-                stroke="#374151" strokeWidth={1.5} opacity={0.5} />
-          <line x1={cfg.cx + cfg.w/2 - 8} y1={cfg.cy - cfg.h/2 + 8}
-                x2={cfg.cx - cfg.w/2 + 8} y2={cfg.cy + cfg.h/2 - 8}
-                stroke="#374151" strokeWidth={1.5} opacity={0.5} />
+          {/* 회색 반투명 오버레이 */}
+          <rect
+            x={cfg.cx - cfg.w/2} y={cfg.cy - cfg.h/2}
+            width={cfg.w} height={cfg.h}
+            fill="#1f2937" opacity={0.45}
+            rx={4}
+          />
+          {/* 빨간 X 오버레이 */}
+          <line x1={cfg.cx - cfg.w/2 + 10} y1={cfg.cy - cfg.h/2 + 10}
+                x2={cfg.cx + cfg.w/2 - 10} y2={cfg.cy + cfg.h/2 - 10}
+                stroke="#ef4444" strokeWidth={2} opacity={0.6} />
+          <line x1={cfg.cx + cfg.w/2 - 10} y1={cfg.cy - cfg.h/2 + 10}
+                x2={cfg.cx - cfg.w/2 + 10} y2={cfg.cy + cfg.h/2 - 10}
+                stroke="#ef4444" strokeWidth={2} opacity={0.6} />
           <text x={cfg.cx} y={cfg.cy + 5}
             textAnchor="middle" fontSize={12} fontWeight="700"
             fill="#4b5563" fontFamily="monospace" letterSpacing={1}>
