@@ -34,11 +34,10 @@ interface CBSymbolProps {
 }
 
 function CBSymbol({ id, x, y, closed, controllable, onToggle }: CBSymbolProps) {
-  const size = 10;
+  const size = 11;
   const half = size / 2;
   const color = closed ? '#22c55e' : '#ef4444';
   const cursor = controllable ? 'pointer' : 'default';
-  const fill = closed ? color : 'transparent';
 
   return (
     <g
@@ -46,29 +45,38 @@ function CBSymbol({ id, x, y, closed, controllable, onToggle }: CBSymbolProps) {
       style={{ cursor }}
       className="cb-symbol"
     >
+      {/* 호버 영역 확장 (클릭 편의) */}
+      {controllable && (
+        <rect x={x - 12} y={y - 12} width={24} height={24} fill="transparent" stroke="none" />
+      )}
+
+      {/* CB 박스 */}
       <rect
         x={x - half} y={y - half}
         width={size} height={size}
-        fill={fill}
+        fill={closed ? color : '#0a1628'}
         stroke={color}
-        strokeWidth={1.5}
-        rx={1}
+        strokeWidth={1.8}
+        rx={1.5}
       />
+
+      {/* 투입(Closed): 수평 바 */}
       {closed && (
         <line
           x1={x - half + 2} y1={y}
           x2={x + half - 2} y2={y}
-          stroke="#0f172a" strokeWidth={1.5}
+          stroke="#0f172a" strokeWidth={2}
         />
       )}
-      {/* 호버 영역 확장 */}
-      {controllable && (
-        <rect
-          x={x - 10} y={y - 10}
-          width={20} height={20}
-          fill="transparent"
-          stroke="none"
-        />
+
+      {/* 개방(Open): 빨간 X 표시 */}
+      {!closed && (
+        <g opacity={0.9}>
+          <line x1={x - half + 2} y1={y - half + 2} x2={x + half - 2} y2={y + half - 2}
+            stroke="#ef4444" strokeWidth={1.8} />
+          <line x1={x + half - 2} y1={y - half + 2} x2={x - half + 2} y2={y + half - 2}
+            stroke="#ef4444" strokeWidth={1.8} />
+        </g>
       )}
     </g>
   );
@@ -145,13 +153,20 @@ function SubstationSVG({ cfg, pfResult, getSwitchStatus, onToggleCB }: Substatio
         </>
       )}
       {!energized && (
-        <text
-          x={cfg.cx} y={cfg.cy + 5}
-          textAnchor="middle" fontSize={11}
-          fill="#6b7280" fontFamily="monospace"
-        >
-          DEAD
-        </text>
+        <g>
+          {/* 대각선 X (사선 표시) */}
+          <line x1={cfg.cx - cfg.w/2 + 8} y1={cfg.cy - cfg.h/2 + 8}
+                x2={cfg.cx + cfg.w/2 - 8} y2={cfg.cy + cfg.h/2 - 8}
+                stroke="#374151" strokeWidth={1.5} opacity={0.5} />
+          <line x1={cfg.cx + cfg.w/2 - 8} y1={cfg.cy - cfg.h/2 + 8}
+                x2={cfg.cx - cfg.w/2 + 8} y2={cfg.cy + cfg.h/2 - 8}
+                stroke="#374151" strokeWidth={1.5} opacity={0.5} />
+          <text x={cfg.cx} y={cfg.cy + 5}
+            textAnchor="middle" fontSize={12} fontWeight="700"
+            fill="#4b5563" fontFamily="monospace" letterSpacing={1}>
+            DEAD
+          </text>
+        </g>
       )}
 
       {/* 모선(Busbar) */}
@@ -190,22 +205,35 @@ interface BayProps {
 }
 
 function BaySVG({ bay, busY, energized, closed, onToggleCB }: BayProps) {
-  const wireColor = (energized && closed) ? '#22d3ee' : '#374151';
+  // ① 버스바쪽 배선: 버스가 활선이면 cyan
+  const busWireColor = energized ? '#22d3ee' : '#374151';
+  // ② 터미널쪽 배선: 버스 활선 + CB 투입이어야 cyan, 아니면 회색 점선
+  const termWireColor = (energized && closed) ? '#22d3ee' : '#2d3748';
+  const termDash = (!energized || !closed) ? '5 4' : undefined;
+
   const { cbPos, dsPos, exitPos, cbId, dsId, dir, label, type } = bay;
-
-  // 버스바 연결점
-  const busConnectX = (dir === 'E') ? cbPos.x - 14 :
-                      (dir === 'W') ? cbPos.x + 14 : cbPos.x;
-  const busConnectY = (dir === 'N') ? cbPos.y + 14 :
-                      (dir === 'S') ? cbPos.y - 14 : cbPos.y;
-
-  // 수직/수평 배선
   const isHorizontal = dir === 'E' || dir === 'W';
 
-  // 배선 경로: busbar → CB → DS → exit
-  const wireD = isHorizontal
-    ? `M ${busConnectX},${busY} L ${busConnectX},${busConnectY} L ${dsPos.x},${dsPos.y} L ${exitPos.x},${exitPos.y}`
-    : `M ${cbPos.x},${busY} L ${cbPos.x},${dsPos.y} L ${exitPos.x},${exitPos.y}`;
+  // CB 위치에서 버스바 방향으로의 연결점 (CB 심볼 크기 반영)
+  const half = 6;
+  const busConnectX = (dir === 'E') ? cbPos.x - half :
+                      (dir === 'W') ? cbPos.x + half : cbPos.x;
+  const busConnectY = (dir === 'N') ? cbPos.y + half :
+                      (dir === 'S') ? cbPos.y - half : cbPos.y;
+  // CB에서 터미널 방향
+  const termStartX = (dir === 'E') ? cbPos.x + half :
+                     (dir === 'W') ? cbPos.x - half : cbPos.x;
+  const termStartY = (dir === 'N') ? cbPos.y - half :
+                     (dir === 'S') ? cbPos.y + half : cbPos.y;
+
+  // 구간 ①: busbar → CB
+  const busWireD = isHorizontal
+    ? `M ${busConnectX},${busY} L ${busConnectX},${busConnectY}`
+    : `M ${cbPos.x},${busY} L ${cbPos.x},${busConnectY}`;
+  // 구간 ②: CB → DS → exit
+  const termWireD = isHorizontal
+    ? `M ${termStartX},${termStartY} L ${dsPos.x},${dsPos.y} L ${exitPos.x},${exitPos.y}`
+    : `M ${termStartX},${termStartY} L ${exitPos.x},${exitPos.y}`;
 
   // 장비 레이블
   const labelX = type === 'gen' ? exitPos.x - 22 :
@@ -219,26 +247,35 @@ function BaySVG({ bay, busY, energized, closed, onToggleCB }: BayProps) {
                  exitPos.y + 4;
   const labelAnchor = (dir === 'E') ? 'start' : (dir === 'W') ? 'end' : 'middle';
 
-  // 장비 기호 (gen = 원, load = 아래 화살표)
   const genSymbol = type === 'gen' && (
-    <g>
-      <circle cx={exitPos.x} cy={exitPos.y + 8} r={7}
-        fill="none" stroke="#4ade80" strokeWidth={1.5} />
-      <text x={exitPos.x} y={exitPos.y + 12}
-        textAnchor="middle" fontSize={8} fill="#4ade80">G</text>
+    <g opacity={energized ? 1 : 0.35}>
+      <circle cx={exitPos.x} cy={exitPos.y + 9} r={8}
+        fill={energized ? 'rgba(74,222,128,0.1)' : 'none'} stroke="#4ade80" strokeWidth={1.5} />
+      <text x={exitPos.x} y={exitPos.y + 13}
+        textAnchor="middle" fontSize={9} fontWeight="700" fill="#4ade80">G</text>
     </g>
   );
   const loadSymbol = type === 'load' && (
     <polygon
-      points={`${exitPos.x},${exitPos.y + 2} ${exitPos.x - 6},${exitPos.y + 12} ${exitPos.x + 6},${exitPos.y + 12}`}
-      fill="#fbbf24" opacity={0.8}
+      points={`${exitPos.x},${exitPos.y + 2} ${exitPos.x - 7},${exitPos.y + 14} ${exitPos.x + 7},${exitPos.y + 14}`}
+      fill="#fbbf24" opacity={energized ? 0.85 : 0.25}
     />
   );
 
   return (
     <g>
-      {/* 배선 */}
-      <path d={wireD} stroke={wireColor} strokeWidth={1.5} fill="none" />
+      {/* ① 버스바 → CB 구간 (활선 색상) */}
+      <path d={busWireD} stroke={busWireColor} strokeWidth={1.8} fill="none" strokeLinecap="round" />
+
+      {/* ② CB → 터미널 구간 (단선 시 회색 점선) */}
+      <path
+        d={termWireD}
+        stroke={termWireColor}
+        strokeWidth={1.8}
+        fill="none"
+        strokeLinecap="round"
+        strokeDasharray={termDash}
+      />
 
       {/* DS 기호 */}
       <DSSymbol x={dsPos.x} y={dsPos.y} />
@@ -258,14 +295,13 @@ function BaySVG({ bay, busY, energized, closed, onToggleCB }: BayProps) {
 
       {/* 장비 라벨 */}
       <text
-        x={labelX} y={labelY + (type !== 'line' ? 14 : 0)}
+        x={labelX} y={labelY + (type !== 'line' ? 15 : 0)}
         textAnchor={labelAnchor}
-        fontSize={9} fill="#64748b" fontFamily="monospace"
+        fontSize={10} fill="#64748b" fontFamily="monospace"
       >
         {label}
       </text>
 
-      {/* DS ID 라벨 (숨김, 디버그용) */}
       <title>{`${cbId} / ${dsId} – Click CB to toggle`}</title>
     </g>
   );
@@ -280,49 +316,98 @@ interface LineProps {
   pfResult: PowerFlowResult | null;
 }
 
+/** SVG path에서 두 끝점을 파싱하여 t(0~1) 지점의 좌표 반환 */
+function pathMidpoint(d: string, t = 0.5): { x: number; y: number; angle: number } {
+  const m = d.match(/M\s*([\d.]+),([\d.]+)\s*L\s*([\d.]+),([\d.]+)/);
+  if (!m) return { x: 0, y: 0, angle: 0 };
+  const x1 = parseFloat(m[1]), y1 = parseFloat(m[2]);
+  const x2 = parseFloat(m[3]), y2 = parseFloat(m[4]);
+  return {
+    x: x1 + (x2 - x1) * t,
+    y: y1 + (y2 - y1) * t,
+    angle: Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI,
+  };
+}
+
 function LineSVG({ branchId, d, labelPos, pfResult }: LineProps) {
   const br = pfResult?.branches.find(b => b.branchId === branchId);
   const color = lineColor(br);
   const sw = loadingStroke(br);
+  const isEnergized = br?.isEnergized ?? false;
 
   const pFrom = br?.pFromMW;
   const loading = br?.loading;
-  const showFlow = br?.isEnergized && pFrom !== undefined;
+  const showFlow = isEnergized && pFrom !== undefined;
+
+  // 방향 화살표: 선로 중간 50% 지점
+  const mid = pathMidpoint(d, 0.5);
+  // pFrom > 0 이면 from→to 방향, < 0 이면 to→from
+  const arrowAngle = (pFrom !== undefined && pFrom < 0) ? mid.angle + 180 : mid.angle;
 
   return (
     <g className="line-element">
-      {/* 배경 선 (강조용) */}
-      {br?.isEnergized && (
-        <path d={d} stroke={color} strokeWidth={sw + 4} fill="none" opacity={0.15} />
+      {/* 활선 배경 글로우 */}
+      {isEnergized && (
+        <path d={d} stroke={color} strokeWidth={sw + 5} fill="none" opacity={0.12} />
       )}
-      {/* 메인 선로 */}
-      <path d={d} stroke={color} strokeWidth={sw} fill="none" strokeLinecap="round" />
+
+      {/* 메인 선로 (비활선: 점선) */}
+      <path
+        d={d}
+        stroke={color}
+        strokeWidth={sw}
+        fill="none"
+        strokeLinecap="round"
+        strokeDasharray={isEnergized ? undefined : '10 6'}
+      />
+
+      {/* 전력 흐름 방향 화살표 (활선일 때만) */}
+      {showFlow && Math.abs(pFrom!) > 0.5 && (
+        <g transform={`translate(${mid.x},${mid.y}) rotate(${arrowAngle})`}>
+          <polygon
+            points="-6,-4 6,0 -6,4"
+            fill={color}
+            opacity={0.85}
+          />
+        </g>
+      )}
 
       {/* 조류 정보 라벨 */}
       {showFlow && (
         <g>
           <rect
-            x={labelPos.x - 28} y={labelPos.y - 9}
-            width={56} height={22}
-            fill="#0a1628" stroke={color} strokeWidth={0.5}
-            rx={3} opacity={0.9}
+            x={labelPos.x - 32} y={labelPos.y - 10}
+            width={64} height={24}
+            fill="#070d1a" stroke={color} strokeWidth={0.8}
+            rx={3} opacity={0.95}
           />
           <text
-            x={labelPos.x} y={labelPos.y + 1}
-            textAnchor="middle" fontSize={9}
-            fill={color} fontFamily="monospace" fontWeight="600"
+            x={labelPos.x} y={labelPos.y + 2}
+            textAnchor="middle" fontSize={10}
+            fill={color} fontFamily="monospace" fontWeight="700"
           >
             {pFrom! >= 0 ? '+' : ''}{pFrom!.toFixed(1)} MW
           </text>
           <text
-            x={labelPos.x} y={labelPos.y + 11}
-            textAnchor="middle" fontSize={8}
-            fill={loading! > 90 ? '#ef4444' : '#94a3b8'}
+            x={labelPos.x} y={labelPos.y + 12}
+            textAnchor="middle" fontSize={9}
+            fill={loading! > 90 ? '#ef4444' : loading! > 70 ? '#f59e0b' : '#64748b'}
             fontFamily="monospace"
           >
             {loading!.toFixed(1)}%
           </text>
         </g>
+      )}
+
+      {/* 비활선 라벨 */}
+      {!isEnergized && (
+        <text
+          x={labelPos.x} y={labelPos.y}
+          textAnchor="middle" fontSize={9}
+          fill="#374151" fontFamily="monospace"
+        >
+          OPEN
+        </text>
       )}
     </g>
   );

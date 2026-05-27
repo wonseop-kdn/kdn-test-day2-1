@@ -127,7 +127,7 @@ body, html, #root {
 }
 
 .title-text {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   font-family: var(--font-mono);
@@ -135,7 +135,7 @@ body, html, #root {
 }
 
 .title-sub {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-dim);
   font-family: var(--font-mono);
 }
@@ -155,7 +155,7 @@ body, html, #root {
 }
 
 .stat-label {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -163,7 +163,7 @@ body, html, #root {
 }
 
 .stat-value {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   font-family: var(--font-mono);
 }
@@ -249,7 +249,7 @@ body, html, #root {
   border-bottom: 1px solid var(--border-dim);
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--accent-cyan);
   letter-spacing: 1px;
@@ -310,28 +310,28 @@ body, html, #root {
 
 .alarm-time {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dim);
   flex-shrink: 0;
 }
 
 .alarm-severity {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 .alarm-msg {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 13px;
   color: var(--text-secondary);
   padding-left: 12px;
   line-height: 1.3;
 }
 
 .alarm-source {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-dim);
   margin-right: 6px;
   padding: 1px 4px;
@@ -351,7 +351,7 @@ body, html, #root {
   border: none;
   color: var(--text-dim);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
   padding: 3px 8px;
@@ -373,13 +373,13 @@ body, html, #root {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .data-table th {
   padding: 5px 8px;
   text-align: left;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-dim);
   text-transform: uppercase;
@@ -394,6 +394,7 @@ body, html, #root {
   padding: 4px 8px;
   border-bottom: 1px solid rgba(30,58,95,0.4);
   color: var(--text-secondary);
+  font-size: 12px;
 }
 
 .data-table tr:hover td { background: var(--bg-hover); }
@@ -412,7 +413,7 @@ body, html, #root {
   padding: 1px 5px;
   border-radius: 2px;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -482,7 +483,7 @@ body, html, #root {
   background: #05090f;
   border-top: 1px solid var(--border-dim);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dim);
   flex-shrink: 0;
 }
